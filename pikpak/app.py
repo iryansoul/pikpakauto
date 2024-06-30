@@ -114,7 +114,7 @@ def run_script():
         # 捕获异常
         except Exception as e:
             print('异常捕获:', e)
-            yield '异常捕获:\n' + str(e)
+            yield '异常捕获:\n' + str(e) + '\n'
         yield '运行结束!!!'
     return Response(generate_output(), content_type='text/plain')
 
