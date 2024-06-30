@@ -101,20 +101,21 @@ def run_script():
             try:
                 if activation['add_days'] == 5:
                     print(f'邀请码: {invite_code} => 邀请成功, 运行时间: {run_time}秒')
-                    print(f'邀请邮箱: {email}\n邮箱密码: QWer123..')
-                    yield '最后结果:\n' + f'邀请码: {invite_code} => 邀请成功, 运行时间: {run_time}秒\n' + f'邀请邮箱: {email}\n邮箱密码: QWer123..\n'
+                    print(f'邀请邮箱: {email}\n邮箱密码: pw123456')
+                    yield '最后结果:\n' + f'邀请码: {invite_code} ==> 邀请成功\n' + f'运行时间: {run_time}秒\n' 
+                    yield f'邀请邮箱: {email}\n邮箱密码: pw123456\n'
                 elif activation['add_days'] == 0:
-                    print(f'邀请码: {invite_code} => 邀请失败, 运行时间: {run_time}秒')
-                    yield '最后结果:\n' + f'邀请码: {invite_code} => 邀请失败, 运行时间: {run_time}秒\n'
+                    print(f'邀请码: {invite_code} ==> 邀请失败, 运行时间: {run_time}秒')
+                    yield '最后结果:\n' + f'邀请码: {invite_code} ==> 邀请失败\n' + f'运行时间: {run_time}秒\n'
                 else:
-                    print(f'程序异常请重试!!!, 运行时间: {run_time}秒\n')
+                    print(f'程序异常请重试!!!, 运行时间: {run_time}秒')
             except:
                 print('检查你的邀请码是否有效!!!')
 
         # 捕获异常
         except Exception as e:
             print('异常捕获:', e)
-            yield '异常捕获:\n' + str(e) + '\n'
+            yield '异常捕获:\n' + str(e)
         yield '运行结束!!!'
     return Response(generate_output(), content_type='text/plain')
 
@@ -401,7 +402,7 @@ def signup(xid, mail, code, verification_token, change_ip):
         "email": mail,
         "verification_code": code,
         "verification_token": verification_token,
-        "password": "QWer123..",
+        "password": "pw123456",
         "client_id": "YvtoWO6GNHiuCl7x"
     }
     headers = {
