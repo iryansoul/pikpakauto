@@ -1,1 +1,7 @@
-
+Flask
+quart
+opencv-python-headless
+numpy
+requests
+tqdm
+aiohttp
