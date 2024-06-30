@@ -102,12 +102,12 @@ def run_script():
                 if activation['add_days'] == 5:
                     print(f'邀请码: {invite_code} => 邀请成功, 运行时间: {run_time}秒')
                     print(f'邀请邮箱: {email}\n邮箱密码: QWer123..')
-                    yield '最后结果:\n' + f'邀请码: {invite_code} => 邀请成功, 运行时间: {run_time}秒\n' + f'邀请邮箱: {email}\n邮箱密码: QWer123..'
+                    yield '最后结果:\n' + f'邀请码: {invite_code} => 邀请成功, 运行时间: {run_time}秒\n' + f'邀请邮箱: {email}\n邮箱密码: QWer123..\n'
                 elif activation['add_days'] == 0:
                     print(f'邀请码: {invite_code} => 邀请失败, 运行时间: {run_time}秒')
                     yield '最后结果:\n' + f'邀请码: {invite_code} => 邀请失败, 运行时间: {run_time}秒\n'
                 else:
-                    print(f'程序异常请重试!!!, 运行时间: {run_time}秒')
+                    print(f'程序异常请重试!!!, 运行时间: {run_time}秒\n')
             except:
                 print('检查你的邀请码是否有效!!!')
 
@@ -115,7 +115,7 @@ def run_script():
         except Exception as e:
             print('异常捕获:', e)
             yield '异常捕获:\n' + str(e)
-        yield '开始结束!!!'
+        yield '运行结束!!!'
     return Response(generate_output(), content_type='text/plain')
 
 
