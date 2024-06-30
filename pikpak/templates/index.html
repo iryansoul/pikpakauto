@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pikpak自动邀请</title>
     <style>
-        /* 样式部分保持不变 */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -18,7 +17,6 @@
             align-items: center;
             height: 100vh;
         }
-        /* 其他样式部分略 */
         #content {
             background-color: rgba(255, 255, 255, 0.4);
             padding: 30px;
@@ -58,13 +56,15 @@
             font-weight: bold;
         }
         .announce-text {
-            color: green;
+            color: brown;
             width: 100%;
             height: 250px;
             overflow-wrap: break-word;
             text-align: justify;
             display: inline-block;
-            font-size: 16px;
+            font-size: 15px; /* Adjust font size for better readability */
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
         .input-group {
             display: flex;
@@ -114,7 +114,6 @@
             color: brown;
         }
     </style>
-    <!-- 引入 Axios 库 -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/axios@1.6.5/dist/axios.min.js"></script>
 </head>
 <body>
@@ -129,7 +128,7 @@
         </div>
         <div class="announce">
             <w></w>
-            <pre class="announce-text" id="announceText"></pre> <!-- 使用 <pre> 标签显示多行文本 -->
+            <pre class="announce-text" id="announceText"></pre>
         </div>
         <div class="credits">
             <p>源代码作者@B:站纸鸢花的花语</p>
@@ -137,51 +136,58 @@
         </div>
     </div>
 
-    <!-- 添加 JavaScript 代码 -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const inviteInput = document.getElementById('invite_code');
-            const announceText = document.getElementById('announceText');
-            const runButton = document.getElementById('runButton');
+    const inviteInput = document.getElementById('invite_code');
+    const announceText = document.getElementById('announceText');
+    const runButton = document.getElementById('runButton');
 
-            runButton.addEventListener('click', async () => {
-                const inviteCode = inviteInput.value.trim(); // 获取输入的邀请码并去除首尾空格
+    runButton.addEventListener('click', async () => {
+        const inviteCode = inviteInput.value.trim();
 
-                if (!inviteCode) {
-                    announceText.textContent = '请输入邀请码';
-                    return;
-                }
+        if (!inviteCode) {
+            announceText.textContent = '请输入邀请码';
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/run-script', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ invite_code: inviteCode })
+            });
+
+            if (!response.ok) {
+                throw new Error(`网络请求失败，状态码: ${response.status}`);
+            }
+
+            const reader = response.body.getReader();
+            let decoder = new TextDecoder();
+            let chunk;
+            let result = '';
+
+            while (!(chunk = await reader.read()).done) {
+                result += decoder.decode(chunk.value, { stream: true });
 
                 try {
-                    const response = await fetch('/api/run-script', { // 发送 POST 请求到指定的 API 地址
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ invite_code: inviteCode })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('网络请求失败');
-                    }
-
-                    // 每次新的内容到达时追加到显示区域
-                    const reader = response.body.getReader();
-                    let decoder = new TextDecoder();
-                    let chunk;
-                    let result = '';
-
-                    while (!(chunk = await reader.read()).done) {
-                        result += decoder.decode(chunk.value, { stream: true });
-                        announceText.textContent = result; // 更新显示的内容
-                    }
-
+                    const jsonData = JSON.parse(result);
+                    announceText.textContent = JSON.stringify(jsonData, null, 2);
                 } catch (error) {
-                    console.error('请求失败', error);
-                    announceText.textContent = '请求失败，请重试';
+                    announceText.textContent = result;
                 }
-            });
-        });
+
+                announceText.parentElement.scrollTop = announceText.parentElement.scrollHeight;
+            }
+
+        } catch (error) {
+            console.error('请求失败', error);
+            announceText.textContent = `请求失败: ${error.message}`;
+        }
+    });
+});
+
     </script>
 </body>
 </html>
