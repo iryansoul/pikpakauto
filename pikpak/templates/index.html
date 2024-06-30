@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pikpak自动邀请</title>
+    <style>
+        /* 样式部分保持不变 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url("https://pic.imgdb.cn/item/65bba67f871b83018a59c948.jpg");
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        /* 其他样式部分略 */
+        #content {
+            background-color: rgba(255, 255, 255, 0.4);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            text-align: center;
+        }
+        #title {
+            font-size: 24px;
+            color: brown;
+            margin-bottom: 20px;
+        }
+        .announce {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+            border-radius: 5px;
+            overflow-y: auto;
+            max-height: 400px;
+            margin: 10px auto 15px;
+            width: 330px;
+            position: relative;
+        }
+        .announce h3 {
+            margin-bottom: 10px;
+            color: brown;
+        }
+        .announce p {
+            margin-bottom: 5px;
+            color: green;
+            font-size: 12px;
+        }
+        .announce w {
+            color: brown;
+            font-weight: bold;
+        }
+        .announce-text {
+            color: green;
+            width: 100%;
+            height: 250px;
+            overflow-wrap: break-word;
+            text-align: justify;
+            display: inline-block;
+            font-size: 16px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: brown;
+            margin-right: 10px;
+        }
+        .input-group input {
+            width: calc(50%);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid rgba(204, 204, 204, 0.03);
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 10px;
+            margin-left: 10px;
+            font-size: 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: auto;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .credits {
+            margin-top: 20px;
+            font-size: 14px;
+            color: brown;
+        }
+    </style>
+    <!-- 引入 Axios 库 -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/axios@1.6.5/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="content">
+        <div id="title">
+            <b>Pikpak 自动邀请</b>
+        </div>
+        <div class="input-group">
+            <label for="invite_code">邀请码:</label>
+            <input type="text" id="invite_code" name="invite_code" placeholder="在此处输入邀请码">
+            <button class="btn" id="runButton" title="点我开始运行程序。">点击运行</button>
+        </div>
+        <div class="announce">
+            <w></w>
+            <pre class="announce-text" id="announceText"></pre> <!-- 使用 <pre> 标签显示多行文本 -->
+        </div>
+        <div class="credits">
+            <p>源代码作者@B:站纸鸢花的花语</p>
+            <a href="https://teacat.cloud/#/register?code=EWEDzeJA" style="color: blue; font-size: 16px;">需要机场请点击</a>
+        </div>
+    </div>
+
+    <!-- 添加 JavaScript 代码 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inviteInput = document.getElementById('invite_code');
+            const announceText = document.getElementById('announceText');
+            const runButton = document.getElementById('runButton');
+
+            runButton.addEventListener('click', async () => {
+                const inviteCode = inviteInput.value.trim(); // 获取输入的邀请码并去除首尾空格
+
+                if (!inviteCode) {
+                    announceText.textContent = '请输入邀请码';
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/', { // 发送 POST 请求到指定的 API 地址
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ invite_code: inviteCode })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('网络请求失败');
+                    }
+
+                    // 每次新的内容到达时追加到显示区域
+                    const reader = response.body.getReader();
+                    let decoder = new TextDecoder();
+                    let chunk;
+                    let result = '';
+
+                    while (!(chunk = await reader.read()).done) {
+                        result += decoder.decode(chunk.value, { stream: true });
+                        announceText.textContent = result; // 更新显示的内容
+                    }
+
+                } catch (error) {
+                    console.error('请求失败', error);
+                    announceText.textContent = '请求失败，请重试';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
