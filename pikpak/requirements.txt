@@ -5,3 +5,4 @@ numpy
 requests
 tqdm
 aiohttp
+rich
